@@ -1,7 +1,0 @@
-# ninja log v7
-7	701	1787605796916759003	CMakeFiles/main.dir/src/utils/utils.cpp.o	8df3b60cd668dcc9
-7	429	1787605796916551143	CMakeFiles/main.dir/src/vid/vid.cpp.o	aa543fd8c415c2e6
-7	562	1787605796915212380	CMakeFiles/main.dir/src/main.cpp.o	c76c2ee4a576600d
-7	440	1787606181401654111	CMakeFiles/main.dir/src/audio/audio.cpp.o	bc676fb2ed5254b7
-1	6	1787606181395654135	/home/user/code/p69-linux/build/CMakeFiles/cmake.verify_globs	e78d48a2b5aff493
-440	671	1787606181834652330	main	9ea253c07fc397bb

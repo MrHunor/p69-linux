@@ -9,8 +9,9 @@
 
 int main(int argc, char *argv[])
 {
-    CaptureAudio(5,"test.wav");
-    bool running = true;
+   std::string current = GetCurrentPlayingInfo();
+    CaptureAudio(5,"\""+current+".wav\"");
+  /*    bool running = true;
     SDL_Event event;
     std::cout << GetCurrentPlayingInfo() << std::endl;
     std::filesystem::path filePath = findFileByID(std::filesystem::current_path().string(), extractID(DownloadVideo(GetCurrentPlayingInfo())));
@@ -54,7 +55,7 @@ libvlc_release(vlc);
 //SDL
 SDL_DestroyWindow(window);
 SDL_Quit();
+*/
 
-system("pause");
 return 0;
 }

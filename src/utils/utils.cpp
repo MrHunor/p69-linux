@@ -7,6 +7,22 @@
 
 namespace fs = std::filesystem;
 
+std::string executeCommand(const std::string& command)
+{
+    FILE* pipe = popen(command.c_str(),"r");
+
+char buffer[256];
+std::string result;
+
+while (fgets(buffer, sizeof(buffer), pipe)) //this works because fgets returns a pointer to the data, and if no data is available it return nullptr
+{
+    result += buffer;
+}
+pclose(pipe);
+
+return result;
+}
+
 std::string extractID(const std::string& filename)
 {
     size_t start = filename.rfind('[');
