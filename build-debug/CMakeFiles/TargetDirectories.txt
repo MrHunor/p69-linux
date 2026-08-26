@@ -1,3 +1,0 @@
-/home/user/code/p69-linux/build-debug/CMakeFiles/main.dir
-/home/user/code/p69-linux/build-debug/CMakeFiles/edit_cache.dir
-/home/user/code/p69-linux/build-debug/CMakeFiles/rebuild_cache.dir
