@@ -7,6 +7,19 @@
 
 namespace fs = std::filesystem;
 
+std::string removeNewLineAndReturnCharacters(const std::string& inputString)
+{
+std::string retval= inputString;
+  while (!retval.empty() &&
+          (retval.back() == '\n' || retval.back() == '\r'))
+    {
+        retval.pop_back();//delete last character
+    }
+return retval;
+}
+
+
+
 std::string executeCommand(const std::string& command)
 {
     FILE* pipe = popen(command.c_str(),"r");
@@ -36,7 +49,7 @@ std::string extractID(const std::string& filename)
 
 void restartSong()
 {
-system("powershell -c \"(New-Object -ComObject WScript.Shell).SendKeys([char]177)\"");
+executeCommand("playerctl position 0 && playerctl play");
 }
 
 std::string findFileByID(const std::string& dirPath, const std::string& id) {

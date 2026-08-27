@@ -1,17 +1,27 @@
 
 #include <iostream>
 #include <filesystem>
+#include <ostream>
 #include "utils/utils.h"
 #include "vid/vid.h"
 #include "SDL3/SDL.h"
 #include "vlc/vlc.h"
 #include "audio/audio.h"
-
+#define DEFAULT_SAMPLE_RATE 44100
 int main(int argc, char *argv[])
 {
+     
    std::string current = GetCurrentPlayingInfo();
-    CaptureAudio(5,"\""+current+".wav\"");
-  /*    bool running = true;
+   std::string videoName = DownloadVideo(current); 
+   restartSong();
+   CaptureAudio(5,"sample.wav");
+   ConvertToMono(videoName, DEFAULT_SAMPLE_RATE);
+   ConvertToMono("sample.wav",DEFAULT_SAMPLE_RATE);
+   std::vector<float> origin = loadWavMonoToVector(videoName);
+   std::vector<float> sample = loadWavMonoToVector("sample.wav");
+   fftMatchResult result = findMatch(origin,sample,DEFAULT_SAMPLE_RATE);
+   std::cout<<"Offset in samples:"<<result.offsetInSamples<<"\n Offset in Seconds:"<<result.offsetInSeconds<<"\n BestMatchScore:"<<result.Score<<std::endl;
+    /*    bool running = true;
     SDL_Event event;
     std::cout << GetCurrentPlayingInfo() << std::endl;
     std::filesystem::path filePath = findFileByID(std::filesystem::current_path().string(), extractID(DownloadVideo(GetCurrentPlayingInfo())));

@@ -50,11 +50,15 @@ pkg_check_modules(PORTAUDIO REQUIRED IMPORTED_TARGET portaudio-2.0)
 #libsndfile
 pkg_check_modules(SNDFILE REQUIRED IMPORTED_TARGET sndfile)
 
+#kissfft
+pkg_check_modules(KISSFFT REQUIRED IMPORTED_TARGET kissfft-float)
+
 target_link_libraries(main PRIVATE
     PkgConfig::VLC
     PkgConfig::SDL3
     PkgConfig::PORTAUDIO
     PkgConfig::SNDFILE
+    PkgConfig::KISSFFT
     stdc++exp
 )
 
