@@ -33,7 +33,7 @@ set(ALL_SOURCES
     ${AUD_FILES}
 )
 
-add_executable(main ${ALL_SOURCES})
+add_executable(P69 ${ALL_SOURCES})
 
 
 find_package(PkgConfig REQUIRED)
@@ -53,7 +53,7 @@ pkg_check_modules(SNDFILE REQUIRED IMPORTED_TARGET sndfile)
 #kissfft
 pkg_check_modules(KISSFFT REQUIRED IMPORTED_TARGET kissfft-float)
 
-target_link_libraries(main PRIVATE
+target_link_libraries(P69 PRIVATE
     PkgConfig::VLC
     PkgConfig::SDL3
     PkgConfig::PORTAUDIO
@@ -64,11 +64,11 @@ target_link_libraries(main PRIVATE
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR
    CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-    target_compile_options(main PRIVATE
+    target_compile_options(P69 PRIVATE
         -fdiagnostics-color=always
         -O3
         )
 
-    set_property(TARGET main PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
+    set_property(TARGET P69 PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 
 endif()

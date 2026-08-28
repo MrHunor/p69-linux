@@ -21,6 +21,21 @@ return retval;
 }
 
 
+std::string getRidOfESCCharactersinAstrics(const std::string& str)
+{
+    std::string result = "'";
+    
+    for (char c : str)
+    {
+        if (c == '\'')
+            result += "'\\''";
+        else
+            result += c;
+    }
+
+    result += "'";
+    return result;
+}
 
 std::string executeCommand(const std::string& command)
 {

@@ -19,6 +19,12 @@
 
 namespace fs = std::filesystem;
 
+
+
+
+
+
+
 std::vector<float> loadWavMonoToVector(const std::string& filename)
 {
     SF_INFO info{};
@@ -79,7 +85,7 @@ int getNextPowerOfTwo(int n)
 
 //god knows how fft works
 //a score of >0.5 can be considerd a match, anything under that is questionable
-fftMatchResult findMatch( const std::vector<float>& origin, const std::vector<float>& clip, double sampleRate)
+fftMatchResult findMatch(const std::vector<float>& origin, const std::vector<float>& clip, double sampleRate)
 {
 //definitv sizes
 const int originSize= origin.size();
