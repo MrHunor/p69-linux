@@ -40,9 +40,7 @@ std::string ConvertToMono(const std::string& input,const std::string& output,int
     {
         std::string temp = output + ".tmp.wav";
 
-        std::string cmd = std::format(
-            "ffmpeg -y -i '{}' -ac 1 -ar {} '{}' && mv '{}' '{}'",
-            input, sampleRate, temp, temp, output);
+        std::string cmd = std::format("ffmpeg -y -i '{}' -ac 1 -ar {} '{}' && mv '{}' '{}'",input, sampleRate, temp, temp, output);
 
         return executeCommand(cmd);
     }
@@ -51,6 +49,23 @@ std::string ConvertToMono(const std::string& input,const std::string& output,int
 
     return executeCommand(cmd);
 }
+
+std::string RemoveAudio(const std::string& input, const std::string& output)
+{
+    if (input == output)
+    {
+        std::string temp = output + ".tmp.mp4";
+
+        std::string cmd = std::format("ffmpeg -y -i '{}' -c:v copy -an '{}' && mv '{}' '{}'",input, temp, temp, output);
+
+        return executeCommand(cmd);
+    }
+
+    std::string cmd = std::format("ffmpeg -y -i '{}' -c:v copy -an '{}'",input, output);
+
+    return executeCommand(cmd);
+}
+
 
 int getNextPowerOfTwo(int n)
 {
@@ -63,7 +78,7 @@ int getNextPowerOfTwo(int n)
 }
 
 //god knows how fft works
-//a score of >0.7 can be considerd a match, anything under that is questionable
+//a score of >0.5 can be considerd a match, anything under that is questionable
 fftMatchResult findMatch( const std::vector<float>& origin, const std::vector<float>& clip, double sampleRate)
 {
 //definitv sizes
