@@ -1,10 +1,12 @@
 #include <iostream>
+#include <portaudio.h>
 #include <string>
 #include <source_location>
 #include <stacktrace>
 #include <filesystem>
 #include <string>
-
+#include <thread>
+#include <chrono>
 namespace fs = std::filesystem;
 
 std::string removeNewLineAndReturnCharacters(const std::string& inputString)
@@ -49,8 +51,28 @@ std::string extractID(const std::string& filename)
 
 void restartSong()
 {
-executeCommand("playerctl position 0 && playerctl play");
+
+    executeCommand("playerctl pause");
+    executeCommand("playerctl position 0");
+
+    // Wait until the seek has actually taken effect.
+    while (true)
+    {
+        std::string output = executeCommand("playerctl position");
+
+    
+            double position = std::stod(output);
+
+            if (position <= 0.01)
+                break;
+        
+        
+        std::this_thread::sleep_for(std::chrono::milliseconds(5));
+    }
+
+    executeCommand("playerctl play");
 }
+
 
 std::string findFileByID(const std::string& dirPath, const std::string& id) {
     for (const auto& entry : fs::directory_iterator(dirPath)) {

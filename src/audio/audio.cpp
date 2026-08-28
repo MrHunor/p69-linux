@@ -34,84 +34,23 @@ std::vector<float> loadWavMonoToVector(const std::string& filename)
 
 
 
-std::string ConvertToMono(const std::string& filename, int sampleRate)
+std::string ConvertToMono(const std::string& input,const std::string& output,int sampleRate)
 {
-
-  
-
-  // Convert everything to absolute paths.
-    const fs::path input = fs::absolute(filename);
-    const fs::path temp = input.parent_path() /
-                          (input.stem().string() + ".tmp.mkv");
-
-    std::cout << "Input: " << input << '\n';
-    std::cout << "Temp:  " << temp << '\n';
-
-    // Remove stale temp file.
+    if (input == output)
     {
-        std::error_code ec;
-        fs::remove(temp, ec);
+        std::string temp = output + ".tmp.wav";
 
-        if (ec) {
-            throw std::runtime_error(
-                std::format(
-                    "Failed to remove temp '{}': {}",
-                    temp.string(),
-                    ec.message()
-                )
-            );
-        }
+        std::string cmd = std::format(
+            "ffmpeg -y -i '{}' -ac 1 -ar {} '{}' && mv '{}' '{}'",
+            input, sampleRate, temp, temp, output);
+
+        return executeCommand(cmd);
     }
 
-    // Run FFmpeg.
-    const std::string cmd = std::format(
-        "ffmpeg -y -i \"{}\" -ac 1 -ar {} \"{}\"",
-        input.string(),
-        sampleRate,
-        temp.string()
-    );
+    std::string cmd = std::format("ffmpeg -y -i '{}' -ac 1 -ar {} '{}'",input, sampleRate, output);
 
-    std::cout << "Running:\n" << cmd << "\n\n";
-
-    const int result = std::system(cmd.c_str());
-
-    if (result != 0) {
-        std::error_code ec;
-        fs::remove(temp, ec);
-
-        throw std::runtime_error(
-            std::format(
-                "ffmpeg failed with exit code {}",
-                result
-            )
-        );
-    }
-
-    // Don't use exists() here as the deciding mechanism.
-    // Just try to replace the original.
-    {
-        std::error_code ec;
-
-        fs::rename(temp, input, ec);
-
-        if (ec) {
-            throw std::runtime_error(
-                std::format(
-                    "Failed to replace file:\n"
-                    "  temp:  {}\n"
-                    "  input: {}\n"
-                    "  error: {}",
-                    temp.string(),
-                    input.string(),
-                    ec.message()
-                )
-            );
-        }
-    }
-
-    std::cout << "Successfully replaced: " << input << '\n';
+    return executeCommand(cmd);
 }
-
 
 int getNextPowerOfTwo(int n)
 {
@@ -124,6 +63,7 @@ int getNextPowerOfTwo(int n)
 }
 
 //god knows how fft works
+//a score of >0.7 can be considerd a match, anything under that is questionable
 fftMatchResult findMatch( const std::vector<float>& origin, const std::vector<float>& clip, double sampleRate)
 {
 //definitv sizes
@@ -305,8 +245,8 @@ return {bestOffset, static_cast<double>(bestOffset)/sampleRate,bestScore};
 
 void CaptureAudio(double durationSeconds, const std::string& outputFile) {
 
-    std::string command = std::format("ffmpeg -f pulse -i \"$(pactl get-default-sink).monitor\" -t {} {}",durationSeconds,outputFile);
-    system(command.c_str());
+    std::string command = std::format("ffmpeg -y -f pulse -i \"$(pactl get-default-sink).monitor\" -t {} {}",durationSeconds,outputFile);
+    executeCommand(command);
 }
 
 
