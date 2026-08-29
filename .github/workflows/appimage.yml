@@ -116,9 +116,9 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG="build-${{ github.run_number }}"
-          TITLE="P69 Build ${{ github.run_number }}"
+          TITLE="P69 Automatic Build ${{ github.run_number }}"
 
           gh release create "$TAG" \
             P69-linux-x86_64.AppImage \
             --title "$TITLE" \
-            --notes "Automatic build from commit ${{ github.sha }}"
+            --notes "Automatic build from commit ${{ github.sha }}. Caution! This Build may not work as intended!"
