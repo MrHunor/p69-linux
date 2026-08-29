@@ -1,17 +1,16 @@
 
 #include "SDL3/SDL.h"
 #include "audio/audio.h"
-#include "sstream"
 #include "utils/defs.h"
 #include "utils/utils.h"
 #include "vid/vid.h"
 #include "vlc/vlc.h"
 #include <SDL3/SDL_timer.h>
 #include <SDL3/SDL_video.h>
-#include <filesystem>
 #include <iostream>
 #include <ostream>
 #include <string>
+#include <vlc/libvlc.h>
 #include <vlc/libvlc_media.h>
 #define DEFAULT_SAMPLE_RATE 44100
 //.
@@ -88,7 +87,7 @@ libvlc_instance_t *vlc =
     libvlc_media_t *media = libvlc_media_new_path(vlc, videoName.c_str());
 
     if (!media)
-      InvalidInputMessage("Failed to create VLC media");
+      InvalidInputMessage("Failed to create VLC media. Libvlc error message: "+std::string(libvlc_errmsg()));
 
     libvlc_media_player_t *mediaplayer =
         libvlc_media_player_new_from_media(media);
