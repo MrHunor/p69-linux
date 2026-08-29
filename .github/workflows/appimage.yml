@@ -1,0 +1,116 @@
+```yaml
+name: Build AppImage
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup SDL3
+        id: sdl
+        uses: libsdl-org/setup-sdl@main
+        with:
+          version: 3-latest
+          install-linux-dependencies: true
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            cmake \
+            pkg-config \
+            libvlc-dev \
+            portaudio19-dev \
+            libsndfile1-dev \
+            libkissfft-dev \
+            libfuse2t64 \
+            wget
+
+      - name: Configure CMake
+        run: |
+          cmake -S . -B build \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_PREFIX_PATH="${{ steps.sdl.outputs.prefix }}"
+
+      - name: Build P69
+        run: |
+          cmake --build build \
+            --config Release \
+            --parallel
+
+      - name: Verify build
+        run: |
+          test -f build/P69
+          chmod +x build/P69
+
+      - name: Download linuxdeploy
+        run: |
+          wget -q \
+            https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage \
+            -O linuxdeploy.AppImage
+
+          chmod +x linuxdeploy.AppImage
+
+      - name: Download AppImage plugin
+        run: |
+          wget -q \
+            https://github.com/linuxdeploy/linuxdeploy-plugin-appimage/releases/download/continuous/linuxdeploy-plugin-appimage-x86_64.AppImage \
+            -O linuxdeploy-plugin-appimage.AppImage
+
+          chmod +x linuxdeploy-plugin-appimage.AppImage
+
+      - name: Prepare AppDir
+        run: |
+          mkdir -p AppDir/usr/bin
+          cp build/P69 AppDir/usr/bin/P69
+
+      - name: Create desktop file
+        run: |
+          mkdir -p AppDir/usr/share/applications
+
+          cat > AppDir/usr/share/applications/p69.desktop <<'EOF'
+          [Desktop Entry]
+          Name=P69
+          Comment=P69
+          Exec=P69
+          Type=Application
+          Categories=AudioVideo;
+          Terminal=false
+          EOF
+
+      - name: Build AppImage
+        run: |
+          ./linuxdeploy.AppImage \
+            --appdir AppDir \
+            --desktop-file AppDir/usr/share/applications/p69.desktop \
+            --output appimage
+
+      - name: Rename AppImage
+        run: |
+          mv P69*.AppImage P69-linux-x86_64.AppImage
+
+      - name: Create new GitHub release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="build-${{ github.run_number }}"
+          TITLE="P69 Build ${{ github.run_number }}"
+
+          gh release create "$TAG" \
+            P69-linux-x86_64.AppImage \
+            --title "$TITLE" \
+            --notes "Automatic build from commit ${{ github.sha }}"
+```
