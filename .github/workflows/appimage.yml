@@ -121,6 +121,8 @@ jobs:
           gh release create "$TAG" \
             P69-linux-x86_64.AppImage \
             --title "$TITLE" \
-            --notes "Automatic build from commit ${{ github.sha }}.
-            Commit Message:${{ github.event.head_commit.message }}
-            Caution! This Build may not work as intended!"
+            --notes "
+            CAUTION! This Build may not work as intended!
+            Automatic build from commit ${{ github.sha }}.
+            Commit Message: ${{ github.event.head_commit.message }}.
+            CAUTION! This Build may not work as intended!"
