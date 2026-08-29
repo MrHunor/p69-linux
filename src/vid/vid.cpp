@@ -77,8 +77,6 @@ void runVideoLoop()
     // displaying op
 
     const char *args[] = {
-    "--avcodec-hw=none",//this fixes the green bars on the bottom
-    
     };
 
     libvlc_instance_t *vlc =
