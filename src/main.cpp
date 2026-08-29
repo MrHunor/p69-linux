@@ -14,7 +14,7 @@
 #include <string>
 #include <vlc/libvlc_media.h>
 #define DEFAULT_SAMPLE_RATE 44100
-
+//.
 int main(int argc, char *argv[]) {
   // one time setup
   bool running = true;
