@@ -83,7 +83,7 @@ void runVideoLoop()
     libvlc_new(sizeof(args) / sizeof(args[0]), args);
 
     if (!vlc)
-      InvalidInputMessage("Failed to initialise libVLC");
+      InvalidInputMessage("Failed to initialise libVLC. Libvlc error message: "+std::string(libvlc_errmsg()));
 
     libvlc_media_t *media = libvlc_media_new_path(vlc, videoName.c_str());
 
