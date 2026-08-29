@@ -74,7 +74,13 @@ int main(int argc, char *argv[]) {
 
     // displaying op
 
-    libvlc_instance_t *vlc = libvlc_new(0, nullptr);
+    const char *args[] = {
+    "--avcodec-hw=none",//this fixes the green bars on the bottom
+    
+    };
+
+libvlc_instance_t *vlc =
+    libvlc_new(sizeof(args) / sizeof(args[0]), args);
 
     if (!vlc)
       InvalidInputMessage("Failed to initialise libVLC");
