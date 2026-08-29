@@ -1,3 +1,4 @@
+
 name: Build AppImage
 
 on:
@@ -78,14 +79,13 @@ jobs:
           mkdir -p AppDir/usr/bin
           cp build/P69 AppDir/usr/bin/P69
 
-
       - name: Install application icon
         run: |
           mkdir -p AppDir/usr/share/icons/hicolor/scalable/apps
           cp assets/P69.svg \
-            AppDir/usr/share/icons/hicolor/scalable/apps/P69
+            AppDir/usr/share/icons/hicolor/scalable/apps/P69.svg
 
-        - name: Create desktop file
+      - name: Create desktop file
         run: |
           mkdir -p AppDir/usr/share/applications
 
