@@ -35,6 +35,11 @@ set(ALL_SOURCES
 
 add_executable(P69 ${ALL_SOURCES})
 
+add_custom_command(TARGET P69 POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${CMAKE_SOURCE_DIR}/plugins"
+        "$<TARGET_FILE_DIR:P69>/plugins"
+)
 
 find_package(PkgConfig REQUIRED)
 

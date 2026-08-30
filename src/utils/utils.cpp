@@ -7,7 +7,27 @@
 #include <string>
 #include <thread>
 #include <chrono>
+#include <unistd.h>
+#include <limits.h>
+#include "utils.h"
 namespace fs = std::filesystem;
+
+
+std::filesystem::path getExecutableDir()
+{
+    char buffer[PATH_MAX];
+
+    ssize_t len = readlink("/proc/self/exe", buffer, sizeof(buffer) - 1);
+
+    if (len == -1)
+        InvalidInputMessage("Failed to get executable directory.");
+
+    buffer[len] = '\0';
+
+    return std::filesystem::path(buffer).parent_path();
+}
+
+
 
 std::string removeNewLineAndReturnCharacters(const std::string& inputString)
 {

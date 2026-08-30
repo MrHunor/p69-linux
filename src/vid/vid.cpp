@@ -1,3 +1,4 @@
+#include <cstdlib>
 #include <iostream>
 #include "../utils/utils.h"
 #include "SDL3/SDL.h"
@@ -75,7 +76,9 @@ void runVideoLoop()
     RemoveAudio(videoName, videoName);
 
     // displaying op
-
+    std::string pluginPath = std::string(getExecutableDir())+"/plugins";
+    setenv("VLC_PLUGIN_PATH",pluginPath.c_str(), 1);
+    
     const char *args[] = {
     };
 

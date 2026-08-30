@@ -1,5 +1,7 @@
 #include <source_location>
 #include <string>
+#include <filesystem>
+std::filesystem::path getExecutableDir();
 std::string removeNewLineAndReturnCharacters(const std::string& inputString);
 std::string executeCommand(const std::string& command);
 void InvalidInputMessage(const std::string &details, std::source_location location = std::source_location::current());

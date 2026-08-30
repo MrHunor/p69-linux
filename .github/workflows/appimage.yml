@@ -78,6 +78,7 @@ jobs:
         run: |
           mkdir -p AppDir/usr/bin
           cp build/P69 AppDir/usr/bin/P69
+          cp -a build/plugins AppDir/usr/bin/
 
       - name: Install application icon
         run: |
