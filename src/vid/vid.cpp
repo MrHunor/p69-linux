@@ -86,13 +86,19 @@ void runVideoLoop()
     libvlc_new(sizeof(args) / sizeof(args[0]), args);
 
     if (!vlc)
-      InvalidInputMessage("Failed to initialise libVLC. Libvlc error message: "+std::string(libvlc_errmsg()));
+      {
+      if(libvlc_errmsg()!=0) InvalidInputMessage("Failed to initialise libVLC. Libvlc error message: "+std::string(libvlc_errmsg()));
+      else InvalidInputMessage("Failed to initialise vlc; there is no vlc error message to provide");
+      }
 
     libvlc_media_t *media = libvlc_media_new_path(vlc, videoName.c_str());
 
     if (!media)
-      InvalidInputMessage("Failed to create VLC media. Libvlc error message: "+std::string(libvlc_errmsg()));
-
+    {
+      if(libvlc_errmsg()!=0)InvalidInputMessage("Failed to create new vlc media from:"+videoName+". Libvlc error message: "+std::string(libvlc_errmsg()));
+      else InvalidInputMessage("Failed to create new vlc media from:"+videoName+"; there is no vlc error message to provide"); 
+    }
+    
     libvlc_media_player_t *mediaplayer =
         libvlc_media_player_new_from_media(media);
 
