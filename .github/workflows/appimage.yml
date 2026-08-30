@@ -42,6 +42,7 @@ jobs:
             libsndfile1-dev \
             libkissfft-dev \
             libfuse2 \
+            imagemagick \
             wget
 
       - name: Configure CMake
@@ -101,13 +102,17 @@ jobs:
           mkdir -p \
             AppDir/usr/bin \
             AppDir/usr/share/applications \
-            AppDir/usr/share/icons/hicolor/scalable/apps
+            AppDir/usr/share/icons/hicolor/512x512/apps
 
           cp build/P69 AppDir/usr/bin/P69
           cp -a build/plugins AppDir/usr/bin/plugins
 
-          cp assets/P69.png \
-            AppDir/usr/share/icons/hicolor/scalable/apps/P69.png
+          convert assets/P69.png \
+            -resize 512x512 \
+            -gravity center \
+            -background none \
+            -extent 512x512 \
+            AppDir/usr/share/icons/hicolor/512x512/apps/P69.png
 
       - name: Create desktop file
         run: |
@@ -151,7 +156,7 @@ jobs:
             --appdir AppDir \
             --executable AppDir/usr/bin/P69 \
             --desktop-file AppDir/usr/share/applications/p69.desktop \
-            --icon-file AppDir/usr/share/icons/hicolor/scalable/apps/P69.png \
+            --icon-file AppDir/usr/share/icons/hicolor/512x512/apps/P69.png \
             --exclude-library "libsystemd*" \
             --exclude-library "libdbus-*" \
             --exclude-library "libcap*" \
