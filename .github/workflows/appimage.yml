@@ -1,4 +1,4 @@
-
+```yaml
 name: Build AppImage
 
 on:
@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout repository
@@ -28,15 +28,21 @@ jobs:
       - name: Install build dependencies
         run: |
           sudo apt-get update
+
           sudo apt-get install -y \
             build-essential \
             cmake \
             pkg-config \
             libvlc-dev \
+            libvlc5 \
+            libvlccore9 \
+            vlc-plugin-base \
+            vlc-plugin-video-output \
+            vlc-plugin-access-extra \
             portaudio19-dev \
             libsndfile1-dev \
             libkissfft-dev \
-            libfuse2t64 \
+            libfuse2 \
             wget
 
       - name: Configure CMake
@@ -53,8 +59,23 @@ jobs:
 
       - name: Verify build
         run: |
+          set -eux
+
           test -f build/P69
+          test -d build/plugins
+
           chmod +x build/P69
+
+          echo "P69:"
+          file build/P69
+
+          echo
+          echo "VLC plugins:"
+          find build/plugins -type f | sort | head -30
+
+          echo
+          echo "VLC plugin count:"
+          find build/plugins -type f | wc -l
 
       - name: Download linuxdeploy
         run: |
@@ -63,8 +84,6 @@ jobs:
             -O linuxdeploy.AppImage
 
           chmod +x linuxdeploy.AppImage
-
-
 
       - name: Download AppImage plugin
         run: |
@@ -76,20 +95,23 @@ jobs:
 
       - name: Prepare AppDir
         run: |
-          mkdir -p AppDir/usr/bin
-          cp build/P69 AppDir/usr/bin/P69
-          cp -a build/plugins AppDir/usr/bin/
+          set -eux
 
-      - name: Install application icon
-        run: |
-          mkdir -p AppDir/usr/share/icons/hicolor/scalable/apps
+          rm -rf AppDir
+
+          mkdir -p \
+            AppDir/usr/bin \
+            AppDir/usr/share/applications \
+            AppDir/usr/share/icons/hicolor/scalable/apps
+
+          cp build/P69 AppDir/usr/bin/P69
+          cp -a build/plugins AppDir/usr/bin/plugins
+
           cp assets/P69.png \
             AppDir/usr/share/icons/hicolor/scalable/apps/P69.png
 
       - name: Create desktop file
         run: |
-          mkdir -p AppDir/usr/share/applications
-
           cat > AppDir/usr/share/applications/p69.desktop <<'EOF'
           [Desktop Entry]
           Name=P69
@@ -101,29 +123,112 @@ jobs:
           Terminal=false
           EOF
 
-      - name: Build AppImage
+      - name: Inspect VLC and AppDir before packaging
         run: |
+          set -eux
+
+          echo "Installed VLC packages:"
+          dpkg -l | grep -E 'vlc|libvlc' || true
+
+          echo
+          echo "VLC plugin directories on build machine:"
+          find /usr/lib -type d -path '*/vlc/plugins' -print || true
+
+          echo
+          echo "AppDir:"
+          find AppDir/usr -maxdepth 3 -type f | sort | head -100
+
+          echo
+          echo "P69 dependencies:"
+          ldd AppDir/usr/bin/P69
+
+      - name: Build AppImage
+        env:
+          NO_STRIP: "1"
+        run: |
+          set -eux
+
           ./linuxdeploy.AppImage \
             --appdir AppDir \
+            --executable AppDir/usr/bin/P69 \
             --desktop-file AppDir/usr/share/applications/p69.desktop \
+            --icon-file AppDir/usr/share/icons/hicolor/scalable/apps/P69.png \
+            --exclude-library "libsystemd*" \
+            --exclude-library "libdbus-*" \
+            --exclude-library "libcap*" \
             --output appimage
+
+      - name: Inspect generated AppDir
+        run: |
+          set -eux
+
+          echo "Bundled libraries:"
+          find AppDir/usr/lib -maxdepth 1 -type f -name '*.so*' | sort
+
+          echo
+          echo "Bundled VLC plugins:"
+          find AppDir/usr/bin/plugins -type f | sort | head -30
+
+          echo
+          echo "Plugin count:"
+          find AppDir/usr/bin/plugins -type f | wc -l
+
+          echo
+          echo "Checking for forbidden system libraries:"
+          find AppDir/usr/lib -maxdepth 1 \
+            \( -name 'libsystemd.so*' \
+            -o -name 'libdbus-*.so*' \
+            -o -name 'libcap.so*' \) \
+            -print
+
+          echo
+          echo "Final P69 dependencies:"
+          ldd AppDir/usr/bin/P69
 
       - name: Rename AppImage
         run: |
-          mv P69*.AppImage P69-linux-x86_64.AppImage
+          set -eux
+
+          APPIMAGE=$(find . -maxdepth 1 -type f -name '*.AppImage' \
+            ! -name 'linuxdeploy.AppImage' \
+            ! -name 'linuxdeploy-plugin-appimage.AppImage' \
+            | head -n 1)
+
+          test -n "$APPIMAGE"
+
+          mv "$APPIMAGE" P69-linux-x86_64.AppImage
+          chmod +x P69-linux-x86_64.AppImage
+
+      - name: Smoke test AppImage
+        run: |
+          set -eux
+
+          ./P69-linux-x86_64.AppImage --appimage-extract >/dev/null
+
+          test -x squashfs-root/usr/bin/P69
+          test -d squashfs-root/usr/bin/plugins
+
+          echo "Extracted AppImage structure:"
+          find squashfs-root/usr/bin -maxdepth 2 -type f | sort | head -100
+
+          echo
+          echo "VLC plugin count in AppImage:"
+          find squashfs-root/usr/bin/plugins -type f | wc -l
 
       - name: Create new GitHub release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          set -eux
+
           TAG="build-${{ github.run_number }}"
           TITLE="P69 Automatic Build ${{ github.run_number }}"
 
           gh release create "$TAG" \
             P69-linux-x86_64.AppImage \
             --title "$TITLE" \
-            --notes "
-            CAUTION! This Build may not work as intended!
-            Automatic build from commit ${{ github.sha }}.
-            Commit Message: ${{ github.event.head_commit.message }}.
-            CAUTION! This Build may not work as intended!"
+            --notes "Automatic build from commit ${{ github.sha }}.
+
+            Commit message:
+            ${{ github.event.head_commit.message }}"
+```
