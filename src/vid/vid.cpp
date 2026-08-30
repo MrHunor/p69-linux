@@ -80,6 +80,8 @@ void runVideoLoop()
     setenv("VLC_PLUGIN_PATH",pluginPath.c_str(), 1);
     
     const char *args[] = {
+    "--verbose=4"
+
     };
 
     libvlc_instance_t *vlc =
