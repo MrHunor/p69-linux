@@ -13,56 +13,83 @@ jobs:
   build:
     runs-on: ubuntu-24.04
 
+    # All build/package dependencies come from Arch Linux.
+    # GitHub still provides the runner, but the job steps execute
+    # inside this Arch container.
+    container:
+      image: archlinux:latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      - name: Setup SDL3
-        id: sdl
-        uses: libsdl-org/setup-sdl@main
-        with:
-          version: 3-latest
-          install-linux-dependencies: true
+      - name: Update Arch Linux
+        shell: bash
+        run: |
+          pacman -Syu --noconfirm
 
       - name: Install build dependencies
+        shell: bash
         run: |
-          sudo apt-get update
-
-          sudo apt-get install -y \
-            build-essential \
+          pacman -S --noconfirm \
+            base-devel \
             cmake \
-            pkg-config \
-            libvlc-dev \
-            libvlc5 \
-            libvlccore9 \
-            vlc-plugin-base \
-            vlc-plugin-video-output \
-            vlc-plugin-access-extra \
-            portaudio19-dev \
-            libsndfile1-dev \
-            libkissfft-dev \
-            libfuse2 \
+            pkgconf \
+            git \
+            curl \
+            wget \
+            gh \
             imagemagick \
-            wget
+            sdl3 \
+            portaudio \
+            libsndfile \
+            kissfft \
+            libvlc \
+            vlc \
+            vlc-gui-qt \
+            vlc-plugins-base \
+            vlc-plugins-video-output \
+            vlc-plugin-ffmpeg
+
+      - name: Show installed versions
+        shell: bash
+        run: |
+          set -eux
+
+          echo "=== VLC packages ==="
+          pacman -Q | grep -E '^(libvlc|vlc)' || true
+
+          echo
+          echo "=== LibVLC ==="
+          pacman -Qi libvlc
+
+          echo
+          echo "=== VLC plugin directory ==="
+          find /usr/lib/vlc/plugins -maxdepth 2 -type f | sort | head -50
+
+          echo
+          echo "=== Plugin count ==="
+          find /usr/lib/vlc/plugins -type f | wc -l
 
       - name: Configure CMake
+        shell: bash
         run: |
           cmake -S . -B build \
-            -DCMAKE_BUILD_TYPE=Release \
-            -DCMAKE_PREFIX_PATH="${{ steps.sdl.outputs.prefix }}"
+            -DCMAKE_BUILD_TYPE=Release
 
       - name: Build P69
+        shell: bash
         run: |
           cmake --build build \
             --config Release \
             --parallel
 
       - name: Verify build
+        shell: bash
         run: |
           set -eux
 
           test -f build/P69
-          test -d build/plugins
 
           chmod +x build/P69
 
@@ -70,14 +97,11 @@ jobs:
           file build/P69
 
           echo
-          echo "VLC plugins:"
-          find build/plugins -type f | sort | head -30
-
-          echo
-          echo "VLC plugin count:"
-          find build/plugins -type f | wc -l
+          echo "P69 dependencies:"
+          ldd build/P69
 
       - name: Download linuxdeploy
+        shell: bash
         run: |
           wget -q \
             https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage \
@@ -86,6 +110,7 @@ jobs:
           chmod +x linuxdeploy.AppImage
 
       - name: Download AppImage plugin
+        shell: bash
         run: |
           wget -q \
             https://github.com/linuxdeploy/linuxdeploy-plugin-appimage/releases/download/continuous/linuxdeploy-plugin-appimage-x86_64.AppImage \
@@ -94,6 +119,7 @@ jobs:
           chmod +x linuxdeploy-plugin-appimage.AppImage
 
       - name: Prepare AppDir
+        shell: bash
         run: |
           set -eux
 
@@ -101,13 +127,18 @@ jobs:
 
           mkdir -p \
             AppDir/usr/bin \
+            AppDir/usr/lib/vlc \
             AppDir/usr/share/applications \
             AppDir/usr/share/icons/hicolor/512x512/apps
 
           cp build/P69 AppDir/usr/bin/P69
-          cp -a build/plugins AppDir/usr/bin/plugins
 
-          convert assets/P69.png \
+          # IMPORTANT:
+          # Use the VLC plugins installed by the SAME Arch packages
+          # that supplied libvlc/libvlccore.
+          cp -a /usr/lib/vlc/plugins AppDir/usr/lib/vlc/
+
+          magick assets/P69.png \
             -resize 512x512 \
             -gravity center \
             -background none \
@@ -115,6 +146,7 @@ jobs:
             AppDir/usr/share/icons/hicolor/512x512/apps/P69.png
 
       - name: Create desktop file
+        shell: bash
         run: |
           cat > AppDir/usr/share/applications/p69.desktop <<'EOF'
           [Desktop Entry]
@@ -128,27 +160,47 @@ jobs:
           EOF
 
       - name: Inspect VLC and AppDir before packaging
+        shell: bash
         run: |
           set -eux
 
-          echo "Installed VLC packages:"
-          dpkg -l | grep -E 'vlc|libvlc' || true
+          echo "=== Installed VLC packages ==="
+          pacman -Q | grep -E '^(vlc|libvlc)' || true
 
           echo
-          echo "VLC plugin directories on build machine:"
-          find /usr/lib -type d -path '*/vlc/plugins' -print || true
+          echo "=== System LibVLC ==="
+          ls -l /usr/lib/libvlc.so*
+          ls -l /usr/lib/libvlccore.so*
 
           echo
-          echo "AppDir:"
-          find AppDir/usr -maxdepth 3 -type f | sort | head -100
+          echo "=== System VLC plugins ==="
+          find /usr/lib/vlc/plugins -type f | sort | head -50
 
           echo
-          echo "P69 dependencies:"
+          echo "System plugin count:"
+          find /usr/lib/vlc/plugins -type f | wc -l
+
+          echo
+          echo "=== AppDir contents ==="
+          find AppDir/usr -maxdepth 4 -type f | sort | head -150
+
+          echo
+          echo "=== AppDir VLC plugins ==="
+          find AppDir/usr/lib/vlc/plugins -type f | sort | head -50
+
+          echo
+          echo "AppDir plugin count:"
+          find AppDir/usr/lib/vlc/plugins -type f | wc -l
+
+          echo
+          echo "=== P69 dependencies ==="
           ldd AppDir/usr/bin/P69
 
       - name: Build AppImage
+        shell: bash
         env:
           NO_STRIP: "1"
+          APPIMAGE_EXTRACT_AND_RUN: "1"
         run: |
           set -eux
 
@@ -157,39 +209,37 @@ jobs:
             --executable AppDir/usr/bin/P69 \
             --desktop-file AppDir/usr/share/applications/p69.desktop \
             --icon-file AppDir/usr/share/icons/hicolor/512x512/apps/P69.png \
-            --exclude-library "libsystemd*" \
-            --exclude-library "libdbus-*" \
-            --exclude-library "libcap*" \
             --output appimage
 
       - name: Inspect generated AppDir
+        shell: bash
         run: |
           set -eux
 
-          echo "Bundled libraries:"
+          echo "=== Bundled libraries ==="
           find AppDir/usr/lib -maxdepth 1 -type f -name '*.so*' | sort
 
           echo
-          echo "Bundled VLC plugins:"
-          find AppDir/usr/bin/plugins -type f | sort | head -30
+          echo "=== Bundled VLC libraries ==="
+          find AppDir/usr/lib \
+            -maxdepth 1 \
+            \( -name 'libvlc*' -o -name 'libvlccore*' \) \
+            -print | sort
+
+          echo
+          echo "=== Bundled VLC plugins ==="
+          find AppDir/usr/lib/vlc/plugins -type f | sort | head -50
 
           echo
           echo "Plugin count:"
-          find AppDir/usr/bin/plugins -type f | wc -l
+          find AppDir/usr/lib/vlc/plugins -type f | wc -l
 
           echo
-          echo "Checking for forbidden system libraries:"
-          find AppDir/usr/lib -maxdepth 1 \
-            \( -name 'libsystemd.so*' \
-            -o -name 'libdbus-*.so*' \
-            -o -name 'libcap.so*' \) \
-            -print
-
-          echo
-          echo "Final P69 dependencies:"
+          echo "=== Final P69 dependencies ==="
           ldd AppDir/usr/bin/P69
 
       - name: Rename AppImage
+        shell: bash
         run: |
           set -eux
 
@@ -204,22 +254,36 @@ jobs:
           chmod +x P69-linux-x86_64.AppImage
 
       - name: Smoke test AppImage
+        shell: bash
+        env:
+          APPIMAGE_EXTRACT_AND_RUN: "1"
         run: |
           set -eux
 
           ./P69-linux-x86_64.AppImage --appimage-extract >/dev/null
 
           test -x squashfs-root/usr/bin/P69
-          test -d squashfs-root/usr/bin/plugins
+          test -d squashfs-root/usr/lib/vlc/plugins
 
-          echo "Extracted AppImage structure:"
+          echo "=== Extracted AppImage structure ==="
           find squashfs-root/usr/bin -maxdepth 2 -type f | sort | head -100
 
           echo
-          echo "VLC plugin count in AppImage:"
-          find squashfs-root/usr/bin/plugins -type f | wc -l
+          echo "=== VLC plugins in AppImage ==="
+          find squashfs-root/usr/lib/vlc/plugins -type f | sort | head -50
+
+          echo
+          echo "VLC plugin count:"
+          find squashfs-root/usr/lib/vlc/plugins -type f | wc -l
+
+          echo
+          echo "=== VLC libraries in AppImage ==="
+          find squashfs-root/usr/lib -maxdepth 1 \
+            \( -name 'libvlc*' -o -name 'libvlccore*' \) \
+            -print | sort
 
       - name: Create new GitHub release
+        shell: bash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
