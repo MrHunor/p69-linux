@@ -298,6 +298,7 @@ jobs:
 
           gh release create "$TAG" \
             P69-linux-x86_64.AppImage \
+            --repo "${{ github.repository }}" \
             --title "$TITLE" \
             --notes "Automatic build from commit ${{ github.sha }}.
 
