@@ -13,9 +13,6 @@ jobs:
   build:
     runs-on: ubuntu-24.04
 
-    # All build/package dependencies come from Arch Linux.
-    # GitHub still provides the runner, but the job steps execute
-    # inside this Arch container.
     container:
       image: archlinux:latest
 
@@ -57,7 +54,7 @@ jobs:
           set -eux
 
           echo "=== VLC packages ==="
-          pacman -Q | grep -E '^(libvlc|vlc)' || true
+          pacman -Q | grep -E '^(libvlc|vlc)'
 
           echo
           echo "=== LibVLC ==="
@@ -65,7 +62,7 @@ jobs:
 
           echo
           echo "=== VLC plugin directory ==="
-          find /usr/lib/vlc/plugins -maxdepth 2 -type f | sort | head -50
+          find /usr/lib/vlc/plugins -maxdepth 2 -type f | sort | sed -n '1,50p'
 
           echo
           echo "=== Plugin count ==="
@@ -74,12 +71,16 @@ jobs:
       - name: Configure CMake
         shell: bash
         run: |
+          set -eux
+
           cmake -S . -B build \
             -DCMAKE_BUILD_TYPE=Release
 
       - name: Build P69
         shell: bash
         run: |
+          set -eux
+
           cmake --build build \
             --config Release \
             --parallel
@@ -90,19 +91,20 @@ jobs:
           set -eux
 
           test -f build/P69
-
           chmod +x build/P69
 
-          echo "P69:"
+          echo "=== P69 ==="
           file build/P69
 
           echo
-          echo "P69 dependencies:"
+          echo "=== P69 dependencies ==="
           ldd build/P69
 
       - name: Download linuxdeploy
         shell: bash
         run: |
+          set -eux
+
           wget -q \
             https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage \
             -O linuxdeploy.AppImage
@@ -112,6 +114,8 @@ jobs:
       - name: Download AppImage plugin
         shell: bash
         run: |
+          set -eux
+
           wget -q \
             https://github.com/linuxdeploy/linuxdeploy-plugin-appimage/releases/download/continuous/linuxdeploy-plugin-appimage-x86_64.AppImage \
             -O linuxdeploy-plugin-appimage.AppImage
@@ -133,9 +137,9 @@ jobs:
 
           cp build/P69 AppDir/usr/bin/P69
 
-          # IMPORTANT:
-          # Use the VLC plugins installed by the SAME Arch packages
-          # that supplied libvlc/libvlccore.
+          # Use the VLC plugins installed by Arch.
+          # These belong to the same VLC 3.0.23 package set
+          # as libvlc/libvlccore.
           cp -a /usr/lib/vlc/plugins AppDir/usr/lib/vlc/
 
           magick assets/P69.png \
@@ -174,19 +178,19 @@ jobs:
 
           echo
           echo "=== System VLC plugins ==="
-          find /usr/lib/vlc/plugins -type f | sort | head -50
+          find /usr/lib/vlc/plugins -type f | sort | sed -n '1,50p'
 
           echo
           echo "System plugin count:"
           find /usr/lib/vlc/plugins -type f | wc -l
 
           echo
-          echo "=== AppDir contents ==="
-          find AppDir/usr -maxdepth 4 -type f | sort | head -150
+          echo "=== AppDir ==="
+          find AppDir/usr -maxdepth 4 -type f | sort | sed -n '1,150p'
 
           echo
           echo "=== AppDir VLC plugins ==="
-          find AppDir/usr/lib/vlc/plugins -type f | sort | head -50
+          find AppDir/usr/lib/vlc/plugins -type f | sort | sed -n '1,50p'
 
           echo
           echo "AppDir plugin count:"
@@ -228,7 +232,7 @@ jobs:
 
           echo
           echo "=== Bundled VLC plugins ==="
-          find AppDir/usr/lib/vlc/plugins -type f | sort | head -50
+          find AppDir/usr/lib/vlc/plugins -type f | sort | sed -n '1,50p'
 
           echo
           echo "Plugin count:"
@@ -266,11 +270,11 @@ jobs:
           test -d squashfs-root/usr/lib/vlc/plugins
 
           echo "=== Extracted AppImage structure ==="
-          find squashfs-root/usr/bin -maxdepth 2 -type f | sort | head -100
+          find squashfs-root/usr/bin -maxdepth 2 -type f | sort | sed -n '1,100p'
 
           echo
           echo "=== VLC plugins in AppImage ==="
-          find squashfs-root/usr/lib/vlc/plugins -type f | sort | head -50
+          find squashfs-root/usr/lib/vlc/plugins -type f | sort | sed -n '1,50p'
 
           echo
           echo "VLC plugin count:"
