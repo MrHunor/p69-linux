@@ -38,7 +38,7 @@ jobs:
             git \
             curl \
             wget \
-            gh \
+            github-cli \
             imagemagick \
             sdl3 \
             portaudio \
