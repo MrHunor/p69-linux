@@ -76,8 +76,8 @@ void runVideoLoop()
     RemoveAudio(videoName, videoName);
 
     // displaying op
-    std::string pluginPath = std::string(getExecutableDir())+"/plugins";
-    setenv("VLC_PLUGIN_PATH",pluginPath.c_str(), 1);
+//    std::string pluginPath = std::string(getExecutableDir())+"/plugins";
+//    setenv("VLC_PLUGIN_PATH",pluginPath.c_str(), 1);
     
     const char *args[] = {
     "--verbose=4"
