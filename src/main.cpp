@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2026 MrHunor
+ * LICENSE:GNU General Public License v3 (GPLv3)
+ */
 #include "CLI/CLI.hpp"
 #include "vid/vid.h"
 #include <CLI/CLI.hpp>

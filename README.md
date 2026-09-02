@@ -1,4 +1,4 @@
-# P69  
+# P69 © 2026 MrHunor, GPLv3
 
 ## DEMO (3x speed)
 ![Demo](./assets/p69-linux-showcase.gif)  

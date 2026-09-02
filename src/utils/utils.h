@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2026 MrHunor
+ * LICENSE:GNU General Public License v3 (GPLv3)
+ */
 #include <source_location>
 #include <string>
 #include <filesystem>
