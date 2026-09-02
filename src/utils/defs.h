@@ -4,6 +4,7 @@
 #include <source_location>
 #include <chrono>
 #include <iostream>
+#define DEFAULT_CAPTURE_TIME 5
 #define DEFAULT_SAMPLE_RATE 44100
 // Reset
 #define RESET "\033[0m"
@@ -66,6 +67,7 @@ public:
 std::ofstream logFile{"log.txt"};
     int verbose;
     bool deleteOverflow;
+    int CaptureTime; //in seconds
     void out(const std::string &output, int importance, std::source_location location = std::source_location::current(),const std::string& colour = DEFAULT_COLOUR)
     {
         if (importance > verbose)

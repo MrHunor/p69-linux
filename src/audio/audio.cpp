@@ -166,7 +166,7 @@ const double clipMean = clipSum/static_cast<double>(clipSize);
 
 const double clipEnergy = clipSumSq - (clipSum * clipSum)/clipSize;
 
- if (clipEnergy <= 1e-12)
+ if (clipEnergy <= 1e-12)//this is a safetly value to protect against weird float calculations
     {
         kiss_fft_free(forward);
         kiss_fft_free(inverse);

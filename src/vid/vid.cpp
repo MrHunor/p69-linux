@@ -3,7 +3,6 @@
 #include "../utils/utils.h"
 #include "SDL3/SDL.h"
 #include "../audio/audio.h"
-#include "../utils/defs.h"
 #include "vid.h"
 #include "vlc/vlc.h"
 #include <SDL3/SDL_timer.h>
@@ -18,7 +17,7 @@ std::string GetCurrentPlayingInfo()
 return executeCommand(std::string("playerctl metadata --format '{{ artist }} - {{ title }}'"));
 }
 
-void runVideoLoop()
+void runVideoLoop(stateClass& state)
 {
     bool running = true;
   SDL_Event event;
@@ -35,8 +34,7 @@ void runVideoLoop()
     InvalidInputMessage("Failed to create SDL window: " +
                         std::string(SDL_GetError()));
 
-  stateClass state;
-  state.verbose = 4;
+ 
 
   while (running == true) {
     state.out("Quering current playing Info..", 4);
@@ -50,8 +48,8 @@ void runVideoLoop()
     state.out("Attempting to restart song...", 4);
     restartSong();
 
-    state.out("Capturing 5 seconds of audio into sample.wav", 4);
-    CaptureAudio(5, "sample.wav");
+    state.out("Capturing "+std::to_string(state.CaptureTime)+" seconds of audio into sample.wav", 4);
+    CaptureAudio(state.CaptureTime, "sample.wav");
 
     state.out("Converting " + videoName + " and sample.wav to mono ", 4);
     std::string videoMusicIsolated = "VideoSample.wav";
@@ -79,8 +77,9 @@ void runVideoLoop()
 //    std::string pluginPath = std::string(getExecutableDir())+"/plugins";
 //    setenv("VLC_PLUGIN_PATH",pluginPath.c_str(), 1);
     
+    const std::string vlcverbosearg= "--verbose="+std::to_string(state.verbose);
     const char *args[] = {
-    "--verbose=4"
+    vlcverbosearg.c_str()
 
     };
 

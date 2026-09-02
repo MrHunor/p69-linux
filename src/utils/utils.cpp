@@ -120,6 +120,7 @@ std::string findFileByID(const std::string& dirPath, const std::string& id) {
 }
 void InvalidInputMessage(const std::string &details, std::source_location location)
 {
+    //yes i thought of making this state out for colour but that would require passing state (which is not always present), or make state global which is not pretty
     std::cout << std::stacktrace::current() << std::endl;
     std::cout << "Filename:" << location.file_name() << std::endl;
     std::cout << "Function:" << location.function_name() << std::endl;
