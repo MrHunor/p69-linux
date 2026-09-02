@@ -58,12 +58,16 @@ pkg_check_modules(SNDFILE REQUIRED IMPORTED_TARGET sndfile)
 #kissfft
 pkg_check_modules(KISSFFT REQUIRED IMPORTED_TARGET kissfft-float)
 
+#cli11 (on a quick sidenote, in pkgcofnig this package ist named:CLI11 but when installing via pacman it rejects every version that is not written as:cli11)
+pkg_check_modules(CLI11 REQUIRED IMPORTED_TARGET CLI11)
+
 target_link_libraries(P69 PRIVATE
     PkgConfig::VLC
     PkgConfig::SDL3
     PkgConfig::PORTAUDIO
     PkgConfig::SNDFILE
     PkgConfig::KISSFFT
+    PkgConfig::CLI11
     stdc++exp
 )
 
