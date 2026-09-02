@@ -8,8 +8,16 @@
 #include <source_location>
 #include <chrono>
 #include <iostream>
+
 #define DEFAULT_CAPTURE_TIME 5
 #define DEFAULT_SAMPLE_RATE 44100
+#define HDH 720
+#define FHDH 1080
+#define WQHDH 1440
+#define QHDPLUSH 1800
+#define UHDH 2160
+
+//Colors
 // Reset
 #define RESET "\033[0m"
 
@@ -71,7 +79,8 @@ public:
 std::ofstream logFile{"log.txt"};
     int verbose;
     bool deleteOverflow;
-    int CaptureTime; //in seconds
+    int CaptureTime=DEFAULT_CAPTURE_TIME; //in seconds
+    int resoltuinH=HDH;
     void out(const std::string &output, int importance, std::source_location location = std::source_location::current(),const std::string& colour = DEFAULT_COLOUR)
     {
         if (importance > verbose)

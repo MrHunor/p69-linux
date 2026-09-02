@@ -25,14 +25,13 @@ void runVideoLoop(stateClass& state)
 {
     bool running = true;
   SDL_Event event;
-
   SDL_SetHint(SDL_HINT_VIDEO_DRIVER, "x11");
 
   if (!SDL_Init(SDL_INIT_VIDEO))
     InvalidInputMessage("Failed to initialise SDL: " +
                         std::string(SDL_GetError()));
 
-  SDL_Window *window = SDL_CreateWindow("P69", 1280, 720, SDL_WINDOW_RESIZABLE);
+  SDL_Window *window = SDL_CreateWindow("P69", state.resoltuinH*16/9, state.resoltuinH, SDL_WINDOW_RESIZABLE);
 
   if (!window)
     InvalidInputMessage("Failed to create SDL window: " +
@@ -46,8 +45,17 @@ void runVideoLoop(stateClass& state)
     state.out("Current Playing:" + current, 4);
 
     state.out("Downloading Video...", 4);
-    std::string videoName = DownloadVideo(current);
+    std::string videoName = DownloadVideo(current,state.resoltuinH);
     state.out("Downloaded video name:" + videoName, 4);
+    
+    const int trueRes = getVideoHeight(videoName);
+    if(trueRes!=state.resoltuinH)
+    {
+      state.out("Best possible resolution was:"+std::to_string(trueRes)+". Resizing...",4);
+      SDL_SetWindowSize(window,trueRes*16/9,trueRes);
+      state.out(
+    "SDL window size is now " +std::to_string(trueRes),4);
+    }
 
     state.out("Attempting to restart song...", 4);
     restartSong();
@@ -158,15 +166,20 @@ void runVideoLoop(stateClass& state)
 }
 
 
+int getVideoHeight(const std::string& videoName)
+{
+  return stoi(executeCommand("ffprobe -v error -select_streams v:0 -show_entries stream=height -of csv=p=0  \""+videoName+"\""));
+}
 
-std::string DownloadVideo(const std::string& videoName)
+
+std::string DownloadVideo(const std::string& videoName, int resoltuinH)
 {
 
     std::string query = videoName;
     query=removeNewLineAndReturnCharacters(query);
 
  std::string cmd =
-    "yt-dlp -S \"vcodec:h264,res:720\" "
+    "yt-dlp -S \"vcodec:h264,res:"+std::to_string(resoltuinH)+"\" "
     "--print after_move:filepath "
     "\"ytsearch:" + query + "\"";
 

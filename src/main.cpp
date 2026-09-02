@@ -8,7 +8,6 @@
 #include "utils/utils.h"
 int main(int argc, char *argv[]) {
   stateClass state;
-  state.CaptureTime=DEFAULT_CAPTURE_TIME;
   state.out("Starting",4);
   
   //CLI config
@@ -17,6 +16,8 @@ int main(int argc, char *argv[]) {
   app.set_help_all_flag("--help-all","Expand and show all subcommand options");
   app.add_flag("-v,--verbose",state.verbose,"Enable verbose output (Can be stacked up to 4)");
   app.add_option("-t,--time,--capture-time",state.CaptureTime,"Modify the capture time int seconds, default:5s");
+  auto *res =app.add_option("-r, --resolution",state.resoltuinH,"Try to use AT LEAST this resoltion. Possible Resoltions can be:720,1080,1440,1800,2160. Default:720");
+  res->check(CLI::IsMember({720,1080,1440,1800,2160}));
   auto *video = media_group->add_flag("-V,--video","Show Musicvideo");
   auto *lyrics = media_group->add_flag("-L,--lyrics","Show Lyrics");
   media_group->require_option(1);

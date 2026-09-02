@@ -5,5 +5,6 @@
 #include <string>
 #include "../utils/defs.h"
 std::string GetCurrentPlayingInfo();
-std::string DownloadVideo(const std::string& videoName_);
+std::string DownloadVideo(const std::string& videoName, int resoltuinH);
+int getVideoHeight(const std::string& videoName);
 void runVideoLoop(stateClass& state);
