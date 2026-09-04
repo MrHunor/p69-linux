@@ -46,7 +46,8 @@ jobs:
             vlc-gui-qt \
             vlc-plugins-base \
             vlc-plugins-video-output \
-            vlc-plugin-ffmpeg
+            vlc-plugin-ffmpeg \
+            cli11
 
       - name: Show installed versions
         shell: bash
