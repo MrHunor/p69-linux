@@ -381,9 +381,9 @@ and what the program that uses the Library does.
   1. You may copy and distribute verbatim copies of the Library's
 complete source code as you receive it, in any medium, provided that
 you conspicuously and appropriately publish on each copy an
-appropriate copyright notice and disclaimer of warranty; keep intact
-all the notices that refer to this License and to the absence of any
-warranty; and distribute a copy of this License along with the
+appropriate copyright notice and disclaimer of warranty;
+    keep intact all the notices that refer to this License and to the absence of
+        any warranty; and distribute a copy of this License along with the
 Library.
 
   You may charge a fee for the physical act of transferring a copy,
@@ -621,12 +621,12 @@ and the section as a whole is intended to apply in other circumstances.
 
 It is not the purpose of this section to induce you to infringe any
 patents or other property right claims or to contest validity of any
-such claims; this section has the sole purpose of protecting the
-integrity of the free software distribution system which is
-implemented by public license practices.  Many people have made
-generous contributions to the wide range of software distributed
-through that system in reliance on consistent application of that
-system; it is up to the author/donor to decide if he or she is willing
+such claims;
+    this section has the sole purpose of protecting the integrity of the free
+        software distribution system which is implemented by public license
+            practices.Many people have made generous contributions to the wide
+                range of software distributed through that system in reliance on
+                    consistent application of that system; it is up to the author/donor to decide if he or she is willing
 to distribute software through any other system and a licensee cannot
 impose that choice.
 
@@ -840,9 +840,9 @@ and what the program that uses the Library does.
   1. You may copy and distribute verbatim copies of the Library's
 complete source code as you receive it, in any medium, provided that
 you conspicuously and appropriately publish on each copy an
-appropriate copyright notice and disclaimer of warranty; keep intact
-all the notices that refer to this License and to the absence of any
-warranty; and distribute a copy of this License along with the
+appropriate copyright notice and disclaimer of warranty;
+keep intact all the notices that refer to this License and to the absence of any
+    warranty; and distribute a copy of this License along with the
 Library.
 
   You may charge a fee for the physical act of transferring a copy,
@@ -1080,12 +1080,12 @@ and the section as a whole is intended to apply in other circumstances.
 
 It is not the purpose of this section to induce you to infringe any
 patents or other property right claims or to contest validity of any
-such claims; this section has the sole purpose of protecting the
-integrity of the free software distribution system which is
-implemented by public license practices.  Many people have made
-generous contributions to the wide range of software distributed
-through that system in reliance on consistent application of that
-system; it is up to the author/donor to decide if he or she is willing
+such claims;
+this section has the sole purpose of protecting the integrity of the free
+    software distribution system which is implemented
+        by public license practices.Many people have made generous contributions
+            to the wide range of software distributed through that system in
+                reliance on consistent application of that system; it is up to the author/donor to decide if he or she is willing
 to distribute software through any other system and a licensee cannot
 impose that choice.
 
@@ -1203,107 +1203,119 @@ Permission is granted to anyone to use this software for any purpose,
 including commercial applications, and to alter it and redistribute it
 freely, subject to the following restrictions:
   
-1. The origin of this software must not be misrepresented; you must not
-   claim that you wrote the original software. If you use this software
-   in a product, an acknowledgment in the product documentation would be
-   appreciated but is not required. 
-2. Altered source versions must be plainly marked as such, and must not be
-   misrepresented as being the original software.
-3. This notice may not be removed or altered from any source distribution.
+1. The origin of this software must not be misrepresented;
+  you must not claim that you wrote the original software.If
+      you use this software in a product,
+      an acknowledgment in the product documentation would be appreciated but
+          is not required.2. Altered
+              source versions must be plainly marked as such,
+      and must not be misrepresented as being the original software.3. This
+              notice may not be removed or
+          altered from any source distribution.
 
-5. portaudio @ https://github.com/PortAudio/portaudio
+              5. portaudio @https : // github.com/PortAudio/portaudio
 
-Portable header file to contain:
->>>>>
-/*
- * PortAudio Portable Real-Time Audio Library
- * PortAudio API Header File
- * Latest version available at: http://www.portaudio.com
- *
- * Copyright (c) 1999-2006 Ross Bencina and Phil Burk
- *
- * Permission is hereby granted, free of charge, to any person obtaining
- * a copy of this software and associated documentation files
- * (the "Software"), to deal in the Software without restriction,
- * including without limitation the rights to use, copy, modify, merge,
- * publish, distribute, sublicense, and/or sell copies of the Software,
- * and to permit persons to whom the Software is furnished to do so,
- * subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be
- * included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
- * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR
- * ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
- * CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
- * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
+                                    Portable header file to contain
+      : >>>>>
+        /*
+         * PortAudio Portable Real-Time Audio Library
+         * PortAudio API Header File
+         * Latest version available at: http://www.portaudio.com
+         *
+         * Copyright (c) 1999-2006 Ross Bencina and Phil Burk
+         *
+         * Permission is hereby granted, free of charge, to any person obtaining
+         * a copy of this software and associated documentation files
+         * (the "Software"), to deal in the Software without restriction,
+         * including without limitation the rights to use, copy, modify, merge,
+         * publish, distribute, sublicense, and/or sell copies of the Software,
+         * and to permit persons to whom the Software is furnished to do so,
+         * subject to the following conditions:
+         *
+         * The above copyright notice and this permission notice shall be
+         * included in all copies or substantial portions of the Software.
+         *
+         * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+         * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+         * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+         * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+         * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+         * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+         * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+         * SOFTWARE.
+         */
 
-/*
- * The text above constitutes the entire PortAudio license; however, 
- * the PortAudio community also makes the following non-binding requests:
- *
- * Any person wishing to distribute modifications to the Software is
- * requested to send the modifications to the original developer so that
- * they can be incorporated into the canonical version. It is also 
- * requested that these non-binding requests be included along with the 
- * license above.
- */
-<<<<<
- 
+        /*
+         * The text above constitutes the entire PortAudio license; however,
+         * the PortAudio community also makes the following non-binding
+         * requests:
+         *
+         * Any person wishing to distribute modifications to the Software is
+         * requested to send the modifications to the original developer so that
+         * they can be incorporated into the canonical version. It is also
+         * requested that these non-binding requests be included along with the
+         * license above.
+         */
+        <<<<<
 
-Implementation files to contain:
->>>>>
-/*
- * PortAudio Portable Real-Time Audio Library
- * Latest version at: http://www.portaudio.com
- * <platform> Implementation
- * Copyright (c) 1999-2000 <author(s)>
- *
- * Permission is hereby granted, free of charge, to any person obtaining
- * a copy of this software and associated documentation files
- * (the "Software"), to deal in the Software without restriction,
- * including without limitation the rights to use, copy, modify, merge,
- * publish, distribute, sublicense, and/or sell copies of the Software,
- * and to permit persons to whom the Software is furnished to do so,
- * subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be
- * included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
- * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR
- * ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
- * CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
- * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
+            Implementation files to contain :>>>>>
+        /*
+         * PortAudio Portable Real-Time Audio Library
+         * Latest version at: http://www.portaudio.com
+         * <platform> Implementation
+         * Copyright (c) 1999-2000 <author(s)>
+         *
+         * Permission is hereby granted, free of charge, to any person obtaining
+         * a copy of this software and associated documentation files
+         * (the "Software"), to deal in the Software without restriction,
+         * including without limitation the rights to use, copy, modify, merge,
+         * publish, distribute, sublicense, and/or sell copies of the Software,
+         * and to permit persons to whom the Software is furnished to do so,
+         * subject to the following conditions:
+         *
+         * The above copyright notice and this permission notice shall be
+         * included in all copies or substantial portions of the Software.
+         *
+         * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+         * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+         * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+         * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+         * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+         * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+         * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+         * SOFTWARE.
+         */
 
-/*
- * The text above constitutes the entire PortAudio license; however, 
- * the PortAudio community also makes the following non-binding requests:
- *
- * Any person wishing to distribute modifications to the Software is
- * requested to send the modifications to the original developer so that
- * they can be incorporated into the canonical version. It is also 
- * requested that these non-binding requests be included along with the 
- * license above.
- */
-<<<<<
+        /*
+         * The text above constitutes the entire PortAudio license; however,
+         * the PortAudio community also makes the following non-binding
+         * requests:
+         *
+         * Any person wishing to distribute modifications to the Software is
+         * requested to send the modifications to the original developer so that
+         * they can be incorporated into the canonical version. It is also
+         * requested that these non-binding requests be included along with the
+         * license above.
+         */
+        < < < < <
 
-6. kissfft @ https://github.com/mborgerding/kissfft
-LICENSE:
-Copyright (c) 2003-2010 Mark Borgerding . All rights reserved.
+        6. kissfft @https : // github.com/mborgerding/kissfft
+                            LICENSE : Copyright(c) 2003 -
+                                      2010 Mark Borgerding.All rights reserved.
 
-KISS FFT is provided under:
+                                      KISS FFT is provided under :
 
-  SPDX-License-Identifier: BSD-3-Clause
+      SPDX - License - Identifier : BSD
+                                    -
+                                    3 -
+                                    Clause
 
-Being under the terms of the BSD 3-clause "New" or "Revised" License,
-according with:
+                                    Being under the terms of the BSD 3 -
+                                    clause "New" or
+          "Revised" License,
+      according with :
 
-  LICENSES/BSD-3-Clause
+      LICENSES
+      /
+      BSD -
+          3 - Clause

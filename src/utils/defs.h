@@ -80,7 +80,9 @@ std::ofstream logFile{"log.txt"};
     int verbose;
     bool deleteOverflow;
     int CaptureTime=DEFAULT_CAPTURE_TIME; //in seconds
-    int resoltuinH=HDH;
+    int resX;
+    int resY;
+    int resYRequested=HDH;
     void out(const std::string &output, int importance, std::source_location location = std::source_location::current(),const std::string& colour = DEFAULT_COLOUR)
     {
         if (importance > verbose)

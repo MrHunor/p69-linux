@@ -24,20 +24,8 @@ return executeCommand(std::string("playerctl metadata --format '{{ artist }} - {
 void runVideoLoop(stateClass& state)
 {
     bool running = true;
-  SDL_Event event;
-  SDL_SetHint(SDL_HINT_VIDEO_DRIVER, "x11");
-
-  if (!SDL_Init(SDL_INIT_VIDEO))
-    InvalidInputMessage("Failed to initialise SDL: " +
-                        std::string(SDL_GetError()));
-
-  SDL_Window *window = SDL_CreateWindow("P69", state.resoltuinH*16/9, state.resoltuinH, SDL_WINDOW_RESIZABLE);
-
-  if (!window)
-    InvalidInputMessage("Failed to create SDL window: " +
-                        std::string(SDL_GetError()));
-
- 
+    state.resX= state.resYRequested * 16 / 9;
+    state.resY = state.resYRequested;
 
   while (running == true) {
     state.out("Quering current playing Info..", 4);
@@ -45,14 +33,15 @@ void runVideoLoop(stateClass& state)
     state.out("Current Playing:" + current, 4);
 
     state.out("Downloading Video...", 4);
-    std::string videoName = DownloadVideo(current,state.resoltuinH);
+    std::string videoName = DownloadVideo(current,state.resYRequested);
     state.out("Downloaded video name:" + videoName, 4);
     
     const int trueRes = getVideoHeight(videoName);
-    if(trueRes!=state.resoltuinH)
+    if(trueRes!=state.resYRequested)
     {
       state.out("Best possible resolution was:"+std::to_string(trueRes)+". Resizing...",4);
-      SDL_SetWindowSize(window,trueRes*16/9,trueRes);
+      state.resX= trueRes * 16 / 9;
+      state.resY = trueRes;
       state.out(
     "SDL window size is now " +std::to_string(trueRes),4);
     }
@@ -88,7 +77,17 @@ void runVideoLoop(stateClass& state)
     // displaying op
 //    std::string pluginPath = std::string(getExecutableDir())+"/plugins";
 //    setenv("VLC_PLUGIN_PATH",pluginPath.c_str(), 1);
-    
+  
+   SDL_Event event;
+  SDL_SetHint(SDL_HINT_VIDEO_DRIVER, "x11");
+
+  if (!SDL_Init(SDL_INIT_VIDEO))InvalidInputMessage("Failed to initialise SDL: " +std::string(SDL_GetError()));
+
+  SDL_Window *window = SDL_CreateWindow("P69", state.resX, state.resY, SDL_WINDOW_RESIZABLE);
+
+  if (!window)InvalidInputMessage("Failed to create SDL window: " +std::string(SDL_GetError()));
+
+ 
     const std::string vlcverbosearg= "--verbose="+std::to_string(state.verbose);
     const char *args[] = {
     vlcverbosearg.c_str()
@@ -158,11 +157,12 @@ void runVideoLoop(stateClass& state)
   libvlc_media_player_stop(mediaplayer);
   libvlc_media_player_release(mediaplayer);
   libvlc_release(vlc);
-  }
-
 
   SDL_DestroyWindow(window);
   SDL_Quit();
+}
+
+
 }
 
 
@@ -182,10 +182,8 @@ std::string DownloadVideo(const std::string& videoName, int resoltuinH)
     "yt-dlp -S \"vcodec:h264,res:"+std::to_string(resoltuinH)+"\" "
     "--print after_move:filepath "
     "\"ytsearch:" + query + "\"";
-
     
- std::string retval = executeCommand(cmd);
-  
+    std::string retval = executeCommand(cmd);
 
     return removeNewLineAndReturnCharacters(retval);
     
