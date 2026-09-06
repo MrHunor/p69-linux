@@ -5,7 +5,6 @@
 #include "../utils/utils.h"
 #include <cstddef>
 #include <cstdlib>
-#include <filesystem>
 #include <format>
 #include <limits>
 #include <portaudio.h>
@@ -21,7 +20,6 @@
 #include <limits>
 #include <vector>
 
-namespace fs = std::filesystem;
 
 std::vector<float> loadWavMonoToVector(const std::string &filename) {
   SF_INFO info{};
@@ -41,31 +39,39 @@ std::vector<float> loadWavMonoToVector(const std::string &filename) {
 
 std::string ConvertToMono(const std::string &input, const std::string &output,
                           int sampleRate) {
-  if (input == output) {
+     std::string retval;
+                            if (input == output) {
     std::string temp = output + ".tmp.wav";
 
     std::string cmd =
         std::format("ffmpeg -y -i '{}' -ac 1 -ar {} '{}' && mv '{}' '{}'",
                     input, sampleRate, temp, temp, output);
 
-    return executeCommand(cmd);
+    retval= executeCommand(cmd);
+    
+    return retval;
   }
 
   std::string cmd = std::format("ffmpeg -y -i '{}' -ac 1 -ar {} '{}'", input,
                                 sampleRate, output);
-
-  return executeCommand(cmd);
+  
+  retval= executeCommand(cmd);
+  
+  return retval;
 }
 
 std::string RemoveAudio(const std::string &input, const std::string &output) {
   if (input == output) {
     std::string temp = output + ".tmp.mp4";
-
+    std::string retval;
+    
     std::string cmd =
         std::format("ffmpeg -y -i '{}' -c:v copy -an '{}' && mv '{}' '{}'",
                     input, temp, temp, output);
-
-    return executeCommand(cmd);
+    
+    retval =  executeCommand(cmd);
+    
+    return retval;
   }
 
   std::string cmd =

@@ -4,6 +4,7 @@
  */
 #include "utils.h"
 #include <chrono>
+#include <cstdlib>
 #include <filesystem>
 #include <iostream>
 #include <limits.h>
@@ -13,6 +14,7 @@
 #include <string>
 #include <thread>
 #include <unistd.h>
+#include <sys/wait.h>
 namespace fs = std::filesystem;
 
 std::filesystem::path getExecutableDir() {
@@ -51,6 +53,7 @@ std::string getRidOfESCCharactersinAstrics(const std::string &str) {
 }
 
 std::string executeCommand(const std::string &command) {
+  int exitCode;
   FILE *pipe = popen(command.c_str(), "r");
   if(!pipe) InvalidInputMessage("Failed to open Pipe for executing command:"+command);
 
@@ -63,8 +66,15 @@ std::string executeCommand(const std::string &command) {
   {
     result += buffer;
   }
-  pclose(pipe);
 
+  //i know the reference exit code is kinda ugly but the other option would be to return an pair or struct which would require a lot of work and im lazy
+  int status = pclose(pipe);
+  exitCode = -1; 
+  if(WIFEXITED(status))
+  {
+  exitCode = WEXITSTATUS(status);  
+  }
+  if(exitCode!=0)InvalidInputMessage("Shell Command:'"+command+"' has failed.");
   return result;
 }
 
@@ -80,9 +90,10 @@ std::string extractID(const std::string &filename) {
 }
 
 void restartSong() {
-
+  
   executeCommand("playerctl pause");
   executeCommand("playerctl position 0");
+  
 
   // Wait until the seek has actually taken effect.
   while (true) {
@@ -97,6 +108,7 @@ void restartSong() {
   }
 
   executeCommand("playerctl play");
+  
 }
 
 std::string findFileByID(const std::string &dirPath, const std::string &id) {

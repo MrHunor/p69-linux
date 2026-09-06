@@ -2,8 +2,6 @@
  * Copyright (C) 2026 MrHunor
  * LICENSE:GNU General Public License v3 (GPLv3)
  */
-#include <cstdlib>
-#include <iostream>
 #include "../utils/utils.h"
 #include "SDL3/SDL.h"
 #include "../audio/audio.h"
@@ -11,11 +9,10 @@
 #include "vlc/vlc.h"
 #include <SDL3/SDL_timer.h>
 #include <SDL3/SDL_video.h>
-#include <iostream>
-#include <ostream>
 #include <string>
 #include <vlc/libvlc.h>
 #include <vlc/libvlc_media.h>
+#include <vlc/libvlc_vlm.h>
 std::string GetCurrentPlayingInfo()
 {
 return executeCommand(std::string("playerctl metadata --format '{{ artist }} - {{ title }}'"));
@@ -168,13 +165,14 @@ void runVideoLoop(stateClass& state)
 
 int getVideoHeight(const std::string& videoName)
 {
-  return stoi(executeCommand("ffprobe -v error -select_streams v:0 -show_entries stream=height -of csv=p=0  \""+videoName+"\""));
+  int y= stoi(executeCommand("ffprobe -v error -select_streams v:0 -show_entries stream=height -of csv=p=0  \""+videoName+"\""));
+  return y;
 }
 
 
 std::string DownloadVideo(const std::string& videoName, int resoltuinH)
 {
-
+    int exitCode; 
     std::string query = videoName;
     query=removeNewLineAndReturnCharacters(query);
 
@@ -184,7 +182,13 @@ std::string DownloadVideo(const std::string& videoName, int resoltuinH)
     "\"ytsearch:" + query + "\"";
     
     std::string retval = executeCommand(cmd);
-
     return removeNewLineAndReturnCharacters(retval);
     
+}
+
+void runInfoLoop()
+{
+  const std::string title = executeCommand("playerctl metadata xesam:title");
+  const std::string album = executeCommand("playerctl metadata xesam:album");
+  InvalidInputMessage("Feature yet to be fully implemented.");
 }

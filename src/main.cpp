@@ -21,12 +21,13 @@ int main(int argc, char *argv[]) {
   app.add_option("-t,--time,--capture-time", state.CaptureTime,
                  "Modify the capture time int seconds, default:5s");
   auto *res =
-      app.add_option("-r, --resolution", state.resYRequested,
+  app.add_option("-r, --resolution", state.resYRequested,
                      "Try to use AT LEAST this resoltion. Possible Resoltions "
                      "can be:720,1080,1440,1800,2160. Default:720");
   res->check(CLI::IsMember({720, 1080, 1440, 1800, 2160}));
   auto *video = media_group->add_flag("-V,--video", "Show Musicvideo");
   auto *lyrics = media_group->add_flag("-L,--lyrics", "Show Lyrics");
+  auto *info = media_group->add_flag("-I,--info","Show Info Layout including Album cover, Song, Album, Progress etc.");
   media_group->require_option(1);
 
   app.callback([&]() {
@@ -34,7 +35,9 @@ int main(int argc, char *argv[]) {
       runVideoLoop(state);
     if (*lyrics)
       InvalidInputMessage("Sorry but Lyrics mode is yet to be implemented");
-  });
+    if(*info)
+     runInfoLoop();
+    });
 
   CLI11_PARSE(app, argc, argv);
   return 0;
