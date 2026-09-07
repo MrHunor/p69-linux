@@ -38,8 +38,8 @@ jobs:
             github-cli \
             imagemagick \
             sdl3 \
-            sdl3-image \
-            sdl3-ttf \
+            sdl3_image \
+            sdl3_ttf \
             portaudio \
             libsndfile \
             kissfft \
