@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(MyCppProject LANGUAGES CXX)
+project(P69 LANGUAGES CXX)
 
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
     set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose the type of build." FORCE)
@@ -61,6 +61,12 @@ pkg_check_modules(KISSFFT REQUIRED IMPORTED_TARGET kissfft-float)
 #cli11 (on a quick sidenote, in pkgcofnig this package ist named:CLI11 but when installing via pacman it rejects every version that is not written as:cli11)
 pkg_check_modules(CLI11 REQUIRED IMPORTED_TARGET CLI11)
 
+#sdl3_ttf
+pkg_check_modules(SDL3_TTF REQUIRED IMPORTED_TARGET sdl3-ttf)
+
+#sdl3_image
+pkg_check_modules(SDL3_IMAGE REQUIRED IMPORTED_TARGET sdl3-image)
+
 target_link_libraries(P69 PRIVATE
     PkgConfig::VLC
     PkgConfig::SDL3
@@ -68,6 +74,8 @@ target_link_libraries(P69 PRIVATE
     PkgConfig::SNDFILE
     PkgConfig::KISSFFT
     PkgConfig::CLI11
+    PkgConfig::SDL3_TTF
+    PkgConfig::SDL3_IMAGE
     stdc++exp
 )
 

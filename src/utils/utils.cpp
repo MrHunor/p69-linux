@@ -11,6 +11,7 @@
 #include <portaudio.h>
 #include <source_location>
 #include <stacktrace>
+#include <stdexcept>
 #include <string>
 #include <thread>
 #include <unistd.h>
@@ -51,6 +52,14 @@ std::string getRidOfESCCharactersinAstrics(const std::string &str) {
   result += "'";
   return result;
 }
+
+std::string scaleImage(const std::string Inputimage, const std::string outputImage, int height)
+{
+return executeCommand(std::format("ffmpeg -i \"{}\" -vf \"scale=-1:{}\" \"{}\"",Inputimage,height,outputImage));
+}
+
+
+
 
 std::string executeCommand(const std::string &command) {
   int exitCode;

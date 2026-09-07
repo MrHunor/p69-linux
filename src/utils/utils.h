@@ -15,3 +15,4 @@ std::string extractID(const std::string &filename);
 std::string findFileByID(const std::string &dirPath, const std::string &id);
 void restartSong();
 std::string getRidOfESCCharactersinAstrics(const std::string &str);
+std::string scaleImage(const std::string Inputimage, const std::string outputImage, int height);

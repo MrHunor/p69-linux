@@ -7,9 +7,15 @@
 #include "../audio/audio.h"
 #include "vid.h"
 #include "vlc/vlc.h"
+#include <SDL3/SDL_init.h>
+#include <SDL3/SDL_render.h>
 #include <SDL3/SDL_timer.h>
 #include <SDL3/SDL_video.h>
+#include <SDL3_image/SDL_image.h>
+#include <SDL3_ttf/SDL_ttf.h>
+#include <cstddef>
 #include <string>
+#include <unistd.h>
 #include <vlc/libvlc.h>
 #include <vlc/libvlc_media.h>
 #include <vlc/libvlc_vlm.h>
@@ -186,9 +192,38 @@ std::string DownloadVideo(const std::string& videoName, int resoltuinH)
     
 }
 
-void runInfoLoop()
+void runInfoLoop(stateClass& state)
 {
-  const std::string title = executeCommand("playerctl metadata xesam:title");
-  const std::string album = executeCommand("playerctl metadata xesam:album");
+  //define vars 
+  //yes this is ugly and slow
+  const std::string title = removeNewLineAndReturnCharacters(executeCommand("playerctl metadata xesam:title"));
+  const std::string artist = removeNewLineAndReturnCharacters(executeCommand("playerctl metadata xesam:artist"));
+  const std::string album = removeNewLineAndReturnCharacters(executeCommand("playerctl metadata xesam:album"));
+  const std::string length = removeNewLineAndReturnCharacters(executeCommand("playerctl metadata mpris:length"));
+  const std::string trackNumber = removeNewLineAndReturnCharacters(executeCommand("playerctl metadata xesam:trackNumber"));
+  const std::string artUrl = removeNewLineAndReturnCharacters(executeCommand("playerctl metadata mpris:artUrl"));
+  state.out("Queried the following:\ntitle:"+title+"\nartist:"+artist+"\nalbum:"+album+"\nlength(in s):"+std::to_string(stoi(length)/1000000)+"\ntrackNumber:"+trackNumber+"\nartUrl"+artUrl,4);
+
+  SDL_SetHint(SDL_HINT_VIDEO_DRIVER, "x11");
+  if(!SDL_Init(SDL_INIT_VIDEO))InvalidInputMessage("Failed to initialise SDL");
+  if(!TTF_Init())InvalidInputMessage("Failed to inilised SDL-TTF");
+
+  state.resX= state.resYRequested * 16 / 9;
+  state.resY = state.resYRequested;
+
+  SDL_Window *window = SDL_CreateWindow("P69",state.resX, state.resY,0);
+  if(!window)InvalidInputMessage("Failed to initalise window");
+
+  SDL_Renderer *renderer = SDL_CreateRenderer(window, NULL);
+
+  executeCommand(std::format("curl --output \"{}\" {}",album+".png",artUrl));
+  scaleImage(album+".png",album+std::to_string(state.resY)+".png",state.resY/2);
+  SDL_Texture *image = IMG_LoadTexture(renderer, std::string(album+std::to_string(state.resY)+".png").c_str());
+  if(!image)InvalidInputMessage("Failed to initlise image:"+album+std::to_string(state.resY)+".png");
+  SDL_FRect image_rect = {static_cast<float>(state.resX/10),static_cast<float>(state.resY/4),static_cast<float>(image->w),static_cast<float>(image->h)};
+  SDL_RenderTexture(renderer,image,NULL,&image_rect) ;
+  SDL_RenderPresent(renderer);
+  sleep(1);
+
   InvalidInputMessage("Feature yet to be fully implemented.");
 }

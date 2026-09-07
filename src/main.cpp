@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
     if (*lyrics)
       InvalidInputMessage("Sorry but Lyrics mode is yet to be implemented");
     if(*info)
-     runInfoLoop();
+     runInfoLoop(state);
     });
 
   CLI11_PARSE(app, argc, argv);
