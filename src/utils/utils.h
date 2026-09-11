@@ -2,6 +2,8 @@
  * Copyright (C) 2026 MrHunor
  * LICENSE:GNU General Public License v3 (GPLv3)
  */
+#ifndef UTILS_H
+#define UTILS_H
 #include <filesystem>
 #include <source_location>
 #include <string>
@@ -16,3 +18,5 @@ std::string findFileByID(const std::string &dirPath, const std::string &id);
 void restartSong();
 std::string getRidOfESCCharactersinAstrics(const std::string &str);
 std::string scaleImage(const std::string Inputimage, const std::string outputImage, int height);
+std::string SecToMinAndSec(int num);
+#endif

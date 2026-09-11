@@ -22,14 +22,20 @@ file(GLOB UTI_FILES CONFIGURE_DEPENDS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/utils/*.cpp"
 )
 
-file(GLOB AUD_FILES CONFIGURE_DEPENDS
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/audio/*.cpp"
+file(GLOB INF_FILES CONFIGURE_DEFPENDS 
+     "${CMAKE_CURRENT_SOURCE_DIR}/src/info/*.cpp"
 )
+
+file(GLOB AUD_FILES CONFIGURE_DEFPENDS 
+     "${CMAKE_CURRENT_SOURCE_DIR}/src/audio/*.cpp"
+)
+
 
 set(ALL_SOURCES
     ${SRC_FILES}
     ${VID_FILES}
     ${UTI_FILES}
+    ${INF_FILES}
     ${AUD_FILES}
 )
 

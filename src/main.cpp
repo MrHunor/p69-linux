@@ -5,6 +5,7 @@
 #include "CLI/CLI.hpp"
 #include "utils/utils.h"
 #include "vid/vid.h"
+#include "info/info.h"
 #include <CLI/CLI.hpp>
 int main(int argc, char *argv[]) {
   stateClass state;

@@ -11,7 +11,6 @@
 #include <portaudio.h>
 #include <source_location>
 #include <stacktrace>
-#include <stdexcept>
 #include <string>
 #include <thread>
 #include <unistd.h>
@@ -58,7 +57,21 @@ std::string scaleImage(const std::string Inputimage, const std::string outputIma
 return executeCommand(std::format("ffmpeg -i \"{}\" -vf \"scale=-1:{}\" \"{}\"",Inputimage,height,outputImage));
 }
 
-
+std::string SecToMinAndSec(int num) {
+  std::string retval = "";
+  int min = 0;
+  int sec = 0;
+  while (num > 59) {
+    num = num - 60;
+    min++;
+  }
+  sec = num;
+  retval += std::to_string(min) + ":";
+  if (sec < 10)
+    retval += "0";
+  retval += std::to_string(sec);
+  return retval;
+}
 
 
 std::string executeCommand(const std::string &command) {

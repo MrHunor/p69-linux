@@ -2,7 +2,8 @@
  * Copyright (C) 2026 MrHunor
  * LICENSE:GNU General Public License v3 (GPLv3)
  */
-#include <filesystem>
+#ifndef DEFS_H
+#define DEFS_H
 #include <fstream>
 #include <format>
 #include <source_location>
@@ -101,3 +102,5 @@ std::ofstream logFile{"log.txt"};
         if(logFile.is_open()) logFile<<message<<std::endl;
     }
 };
+
+#endif
