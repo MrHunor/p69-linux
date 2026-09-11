@@ -67,6 +67,12 @@ pkg_check_modules(SDL3_TTF REQUIRED IMPORTED_TARGET sdl3-ttf)
 #sdl3_image
 pkg_check_modules(SDL3_IMAGE REQUIRED IMPORTED_TARGET sdl3-image)
 
+#libcurl 
+pkg_check_modules(LIBCURL REQUIRED IMPORTED_TARGET libcurl)
+
+#nlohman
+pkg_check_modules(NLOHMAN REQUIRED IMPORTED_TARGET nlohmann_json)
+
 target_link_libraries(P69 PRIVATE
     PkgConfig::VLC
     PkgConfig::SDL3
@@ -76,6 +82,8 @@ target_link_libraries(P69 PRIVATE
     PkgConfig::CLI11
     PkgConfig::SDL3_TTF
     PkgConfig::SDL3_IMAGE
+    PkgConfig::LIBCURL
+    PkgConfig::NLOHMAN
     stdc++exp
 )
 
